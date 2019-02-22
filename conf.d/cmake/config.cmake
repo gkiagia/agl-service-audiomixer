@@ -22,6 +22,7 @@
 set(PROJECT_NAME agl-service-audiomixer)
 set(PROJECT_PRETTY_NAME "Audio mixer binding service")
 set(PROJECT_DESCRIPTION "Expose PipeWire mixer controls through AGL Framework")
+set(PROJECT_VERSION "0.0")
 set(PROJECT_ICON "icon.png")
 set(PROJECT_AUTHOR "George Kiagiadakis")
 set(PROJECT_AUTHOR_MAIL "george.kiagiadakis@collabora.com")
