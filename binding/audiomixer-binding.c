@@ -176,9 +176,45 @@ static void mute(struct afb_req request)
 	afb_req_success(request, ret_json, NULL);
 }
 
+static void zone(struct afb_req request)
+{
+	json_object *ret_json;
+	const char *role = afb_req_value(request, "role");
+	const char *value = afb_req_value(request, "value");
+	int zone = -1;
+	char command[100];
+	char reply[10];
+
+	if(value) {
+		zone = atoi(value);
+		if (zone < 0 || zone > 4) {
+			afb_req_fail(request, "failed",
+				"Invalid mute value (must be between 0 and 4)");
+			return;
+		}
+	}
+
+	snprintf(command, sizeof(command), "zone %s %d", role, zone);
+	if (session_comm(command, reply, sizeof(reply)) < 0) {
+		afb_req_fail(request, "failed", "media-session communication failed");
+		return;
+	}
+
+	zone = atoi(reply);
+	if (zone < 0) {
+		afb_req_fail(request, "failed", "media-session replied -1");
+		return;
+	}
+
+	ret_json = json_object_new_object();
+	json_object_object_add(ret_json, "zone", json_object_new_int(zone));
+	afb_req_success(request, ret_json, NULL);
+}
+
 static const struct afb_verb_v2 verbs[]= {
 	{ .verb = "volume", .session = AFB_SESSION_NONE, .callback = volume, .info = "Get/Set volume" },
 	{ .verb = "mute",   .session = AFB_SESSION_NONE, .callback = mute,   .info = "Get/Set mute" },
+	{ .verb = "zone",   .session = AFB_SESSION_NONE, .callback = zone,   .info = "Get/Set zone" },
 	{ }
 };
 
